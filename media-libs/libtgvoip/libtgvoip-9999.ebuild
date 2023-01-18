@@ -10,11 +10,11 @@ HOMEPAGE="https://github.com/telegramdesktop/libtgvoip"
 
 #LIBTGVOIP_COMMIT="78a8e22bedb0d06004da8bafeba88b7474cb89a4"
 EGIT_REPO_URI="https://github.com/telegramdesktop/libtgvoip.git"
-S="${WORKDIR}/${PN}"
+#S="${WORKDIR}/${PN}"
 
 LICENSE="Unlicense"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
+#KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
 IUSE="+dsp +alsa pulseaudio"
 
 DEPEND="

@@ -12,11 +12,11 @@ HOMEPAGE="https://desktop.telegram.org"
 
 MY_P="tdesktop-${PV}-full"
 EGIT_REPO_URI="https://github.com/telegramdesktop/tdesktop.git"
-S="${WORKDIR}/${MY_P}"
+#S="${WORKDIR}/${MY_P}"
 
 LICENSE="BSD GPL-3-with-openssl-exception LGPL-2+"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
+#KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
 IUSE="+dbus enchant +fonts +hunspell +jemalloc screencast +spell qt6 qt6-imageformats wayland +X"
 REQUIRED_USE="
 	spell? (

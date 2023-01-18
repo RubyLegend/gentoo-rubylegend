@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit cmake flag-o-matic
+inherit cmake flag-o-matic git-r3
 
 DESCRIPTION="WebRTC build for Telegram"
 HOMEPAGE="https://github.com/desktop-app/tg_owt"
@@ -12,12 +12,12 @@ HOMEPAGE="https://github.com/desktop-app/tg_owt"
 #LIBYUV_COMMIT="ad890067f661dc747a975bc55ba3767fe30d4452"
 EGIT_REPO_URI="https://github.com/desktop-app/tg_owt.git"
 	#https://archive.org/download/libyuv-${LIBYUV_COMMIT}.tar/libyuv-${LIBYUV_COMMIT}.tar.gz"
-S="${WORKDIR}/${PN}-${TG_OWT_COMMIT}"
+#S="${WORKDIR}/${PN}-${TG_OWT_COMMIT}"
 # Fetch libyuv archive from: https://chromium.googlesource.com/libyuv/libyuv/+archive/${LIBYUV_COMMIT}.tar.gz
 
 LICENSE="BSD"
-SLOT="0/${PV##*pre}"
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
+SLOT="0/${PV}"
+#KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
 IUSE="screencast +X"
 
 # This package's USE flags may change the ABI and require a rebuild of
@@ -59,16 +59,16 @@ RDEPEND="${DEPEND}"
 BDEPEND="virtual/pkgconfig"
 
 PATCHES=(
-	"${FILESDIR}/tg_owt-0_pre20220507-allow-disabling-X11.patch"
-	"${FILESDIR}/tg_owt-0_pre20220507-unbundle-crc32c.patch"
+	#"${FILESDIR}/tg_owt-0_pre20220507-allow-disabling-X11.patch"
+	#"${FILESDIR}/tg_owt-0_pre20220507-unbundle-crc32c.patch"
 	"${FILESDIR}/tg_owt-0_pre20220209-gcc-12-cstdint.patch"
 )
 
-src_unpack() {
-	unpack "${P}.tar.gz"
-	cd "${S}/src/third_party/libyuv" || die
-	unpack "libyuv-${LIBYUV_COMMIT}.tar.gz"
-}
+#src_unpack() {
+#	unpack "${P}.tar.gz"
+#	cd "${S}/src/third_party/libyuv" || die
+#	unpack "libyuv-${LIBYUV_COMMIT}.tar.gz"
+#}
 
 src_prepare() {
 	# libopenh264 has GENERATED files with yasm that aren't excluded by

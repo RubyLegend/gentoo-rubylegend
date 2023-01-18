@@ -20,7 +20,7 @@ RESTRICT="!test? ( test )"
 RDEPEND="media-libs/libjpeg-turbo:0="
 BDEPEND="test? ( dev-cpp/gtest )"
 
-S="${WORKDIR}"
+#S="${WORKDIR}"
 
 src_prepare() {
 	# do not install static, fix libdir
