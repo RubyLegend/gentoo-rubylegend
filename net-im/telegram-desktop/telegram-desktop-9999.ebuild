@@ -41,11 +41,11 @@ RDEPEND="
 	dev-libs/xxhash
 	media-libs/fontconfig:=
 	media-libs/libjpeg-turbo:=
-	~media-libs/libtgvoip-2.4.4_p20220503
+	~media-libs/libtgvoip-9999
 	media-libs/openal
 	media-libs/opus:=
 	media-libs/rnnoise
-	~media-libs/tg_owt-0_pre20220507:=[screencast=,X=]
+	~media-libs/tg_owt-9999:=[screencast=,X=]
 	media-video/ffmpeg:=[opus]
 	sys-libs/zlib:=[minizip]
 	virtual/opengl
