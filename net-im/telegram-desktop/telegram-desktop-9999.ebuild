@@ -19,9 +19,6 @@ SLOT="0"
 #KEYWORDS="~amd64 ~arm64 ~ppc64 ~riscv"
 IUSE="+dbus enchant +fonts +hunspell +jemalloc screencast +spell qt6 qt6-imageformats wayland +X"
 REQUIRED_USE="
-	spell? (
-		^^ ( enchant hunspell )
-	)
 	qt6-imageformats? ( qt6 )
 "
 
@@ -46,12 +43,11 @@ RDEPEND="
 	media-libs/opus:=
 	media-libs/rnnoise
 	~media-libs/tg_owt-9999:=[screencast=,X=]
-	media-video/ffmpeg:=[opus]
+	media-video/ffmpeg:=[opus,vpx]
 	sys-libs/zlib:=[minizip]
 	virtual/opengl
 	dbus? ( dev-cpp/glibmm:2.68 )
-	enchant? ( app-text/enchant:= )
-	hunspell? ( >=app-text/hunspell-1.7:= )
+	!enchant? ( >=app-text/hunspell-1.7:= )
 	jemalloc? ( dev-libs/jemalloc:=[-lazy-lock] )
 	!qt6? (
 		>=dev-qt/qtcore-5.15:5
@@ -77,7 +73,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}
 	dev-cpp/range-v3
-	dev-cpp/ms-gsl
+	>=dev-cpp/ms-gsl-4
 "
 BDEPEND="
 	${PYTHON_DEPS}
@@ -88,7 +84,6 @@ BDEPEND="
 
 PATCHES=(
 	"${FILESDIR}/tdesktop-4.2.4-jemalloc-only-telegram.patch"
-	"${FILESDIR}/tdesktop-4.3.4-qt5-incompatibility-2.patch"
 	"${FILESDIR}/tdesktop-4.4.1-fix-dupe-main-decl.patch"
 )
 
@@ -137,7 +132,6 @@ src_configure() {
 		-DDESKTOP_APP_DISABLE_X11_INTEGRATION=$(usex !X)
 		-DDESKTOP_APP_DISABLE_WAYLAND_INTEGRATION=$(usex !wayland)
 		-DDESKTOP_APP_DISABLE_JEMALLOC=$(usex !jemalloc)
-		-DDESKTOP_APP_DISABLE_SPELLCHECK=$(usex !spell)  # enables hunspell (recommended)
 		-DDESKTOP_APP_USE_ENCHANT=$(usex enchant)  # enables enchant and disables hunspell
 		-DDESKTOP_APP_USE_PACKAGED_FONTS=$(usex !fonts)  # use system fonts instead of bundled ones
 	)
