@@ -34,7 +34,7 @@ BDEPEND="
 
 src_configure() {
 	pwd
-	eqmake5 PREFIX="${EPREFIX}/usr/local/"
+	eqmake5 PREFIX="${EPREFIX}/usr/"
 }
 
 src_install() {
