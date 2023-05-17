@@ -9,7 +9,7 @@ DESCRIPTION="Free and Open Source API and drivers for immersive technology. "
 HOMEPAGE="https://github.com/OpenHMD/OpenHMD"
 EGIT_REPO_URI="https://github.com/OpenHMD/OpenHMD.git"
 
-LICENSE="BSL-1"
+LICENSE="Boost-1.0"
 SLOT="0"
 KEYWORDS=""
 
