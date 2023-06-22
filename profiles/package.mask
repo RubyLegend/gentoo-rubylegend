@@ -1,0 +1,3 @@
+# Masked due to char -> wchar conversion on upstream and
+# problems between memcpy and wmemcpy
+#=net-im/telegram-desktop-9999
