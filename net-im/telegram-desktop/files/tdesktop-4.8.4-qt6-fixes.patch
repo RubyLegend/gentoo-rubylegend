@@ -1,0 +1,26 @@
+diff --git a/Telegram/lib_base/base/algorithm.h b/Telegram/lib_base/base/algorithm.h
+index 417df12..7043f1d 100644
+--- a/Telegram/lib_base/base/algorithm.h
++++ b/Telegram/lib_base/base/algorithm.h
+@@ -7,6 +7,7 @@
+ #pragma once
+ 
+ #include <QtCore/QLatin1String>
++#include <QString>
+ #include <memory>
+ 
+ namespace base {
+
+diff --git a/Telegram/SourceFiles/boxes/peers/edit_participant_box.cpp b/Telegram/SourceFiles/boxes/peers/edit_participant_box.cpp
+index f47beae..8a7ef89 100644
+--- a/Telegram/SourceFiles/boxes/peers/edit_participant_box.cpp
++++ b/Telegram/SourceFiles/boxes/peers/edit_participant_box.cpp
+@@ -5,6 +5,8 @@ the official desktop application for the Telegram messaging service.
+ For license and copyright information please follow this link:
+ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ */
++#include <QPointer>
++
+ #include "boxes/peers/edit_participant_box.h"
+ 
+ #include "lang/lang_keys.h"

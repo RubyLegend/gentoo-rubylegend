@@ -91,7 +91,7 @@ PATCHES=(
 	#"${FILESDIR}/tdesktop-4.4.1-fix-dupe-main-decl.patch"
 	"${FILESDIR}/tdesktop-4.8.3-system-cppgir.patch"
 	"${FILESDIR}/tdesktop-4.8.3-fix-clang.patch"
-	"${FILESDIR}/tdesktop-4.8.4-qt6-qstring-fix.patch"
+	"${FILESDIR}/tdesktop-4.8.4-qt6-fixes.patch"
 	"${FILESDIR}/0002_memcpy_fix.patch"
 )
 
