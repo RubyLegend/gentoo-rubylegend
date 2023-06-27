@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit autotools git-r3
+inherit go-module git-r3
 
 DESCRIPTION="A tool to perform Kerberos pre-auth bruteforcing"
 HOMEPAGE="https://github.com/ropnop/kerbrute"
@@ -18,10 +18,15 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 src_compile() {
-	emake linux || die "Compilation failed."
+	 GOOS=linux GOARCH="amd64" go build -a -o "${S}/bin/kerbrute"
+	 [[ -x bin/${PN} ]]|| die "${PN} build failed"
+}
+
+src_test() {
+	go test -work "./..." || die
 }
 
 src_install() {
-	mkdir -p "${D}/usr/bin/"
-	cp "${S}/dist/kerbrute_linux_amd64" "${D}/usr/bin/kerbrute" || die "Installation failed."
+	dobin bin/${PN}
+	dodoc -r README.md
 }
