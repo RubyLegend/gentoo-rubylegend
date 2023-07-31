@@ -70,7 +70,6 @@ RDEPEND="
 			${KIMAGEFORMATS_RDEPEND}
 		)
 	)
-	)
 	X? (
 		x11-libs/libxcb:=
 		x11-libs/xcb-util-keysyms
