@@ -8,10 +8,13 @@ inherit git-r3 qmake-utils xdg-utils
 DESCRIPTION="An audio effect processor for PipeWire and PulseAudio clients "
 HOMEPAGE="https://github.com/Audio4Linux/JDSP4Linux"
 EGIT_REPO_URI="https://github.com/Audio4Linux/JDSP4Linux.git"
+# Use all submodules except for Qt-Advanced-Docking-System (failing submodule init)
+EGIT_SUBMODULES=( '*' '-src/subprojects/EELEditor/3rdparty/docking-system' )
 
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS=""
+IUSE="qt6"
 
 DEPEND="
 	app-arch/libarchive
@@ -30,8 +33,8 @@ BDEPEND="
 "
 
 src_prepare() {
-	sed -i "s|lrelease|$(qt5_get_bindir)/lrelease|g" JDSP4Linux.pro || die
-	sed -i "s|lupdate|$(qt5_get_bindir)/lupdate|g" JDSP4Linux.pro || die
+	sed -i "s|lrelease|$(usex qt6 $(qt6_get_bindir) $(qt5_get_bindir))/lrelease|g" JDSP4Linux.pro || die
+	sed -i "s|lupdate|$(usex qt6 $(qt6_get_bindir) $(qt5_get_bindir))/lupdate|g" JDSP4Linux.pro || die
 	default
 }
 
@@ -45,7 +48,7 @@ src_install () {
 	mkdir -p "${D}/usr/share/applications/"
 	mkdir -p "${D}/usr/share/icons/hicolor/scalable/apps/"
 	cp "${WORKDIR}/${P}/resources/icons/icon.svg" "${D}/usr/share/icons/hicolor/scalable/apps/jamesdsp.svg"
-	cat <<EOT >> ${D}/usr/share/applications/jamesdsp.desktop
+	cat <<EOF >> ${D}/usr/share/applications/jamesdsp.desktop
 [Desktop Entry]
 Name=JamesDSP
 GenericName=Audio effect processor
@@ -57,7 +60,7 @@ Icon=/usr/share/icons/hicolor/scalable/apps/jamesdsp.svg
 StartupNotify=false
 Terminal=false
 Type=Application
-EOT
+EOF
 
 }
 
