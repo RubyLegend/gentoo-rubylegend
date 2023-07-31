@@ -1,2 +1,4 @@
 # Masked live ebuild. Unmask, if you want.
 =net-im/telegram-desktop-9999
+=media-libs/libtgvoip-9999
+=media-libs/tg_owt-9999
