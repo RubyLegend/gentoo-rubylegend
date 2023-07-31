@@ -1,3 +1,2 @@
-# Masked due to char -> wchar conversion on upstream and
-# problems between memcpy and wmemcpy
-#=net-im/telegram-desktop-9999
+# Masked live ebuild. Unmask, if you want.
+=net-im/telegram-desktop-9999
