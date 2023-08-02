@@ -20,5 +20,6 @@ DEPEND="
 	gui-libs/gtk:4
 	gui-libs/libadwaita
 	media-libs/gstreamer
+	dev-util/blueprint-compiler
 "
 RDEPEND="${DEPEND}"
