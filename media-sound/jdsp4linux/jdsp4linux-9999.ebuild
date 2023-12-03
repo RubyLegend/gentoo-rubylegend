@@ -5,7 +5,7 @@ EAPI=8
 
 inherit git-r3 qmake-utils xdg-utils
 
-DESCRIPTION="An audio effect processor for PipeWire and PulseAudio clients "
+DESCRIPTION="An audio effect processor for PipeWire and PulseAudio clients"
 HOMEPAGE="https://github.com/Audio4Linux/JDSP4Linux"
 EGIT_REPO_URI="https://github.com/Audio4Linux/JDSP4Linux.git"
 # Use all submodules except for Qt-Advanced-Docking-System (failing submodule init)
@@ -32,14 +32,15 @@ BDEPEND="
 	dev-qt/linguist-tools
 "
 
-src_prepare() {
-	sed -i "s|lrelease|$(usex qt6 $(qt6_get_bindir) $(qt5_get_bindir))/lrelease|g" JDSP4Linux.pro || die
-	sed -i "s|lupdate|$(usex qt6 $(qt6_get_bindir) $(qt5_get_bindir))/lupdate|g" JDSP4Linux.pro || die
-	default
-}
+# Seems like not required anymore
+# src_prepare() {
+# 	sed -i "s|lrelease|$(usex qt6 $(qt6_get_bindir) $(qt5_get_bindir))/lrelease|g" JDSP4Linux.pro || die
+# 	sed -i "s|lupdate|$(usex qt6 $(qt6_get_bindir) $(qt5_get_bindir))/lupdate|g" JDSP4Linux.pro || die
+# 	default
+# }
 
 src_configure() {
-	eqmake5 PREFIX="/usr"
+	$(usex qt6 eqmake6 eqmake5) PREFIX="/usr"
 }
 
 src_install () {
