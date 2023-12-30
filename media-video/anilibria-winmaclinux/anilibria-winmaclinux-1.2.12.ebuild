@@ -25,6 +25,7 @@ DEPEND="
 	>=media-video/vlc-3.0.18
 	>=dev-libs/openssl-1.1.1
 	>=media-libs/gstreamer-1.10
+	media-plugins/gst-plugins-libav
 "
 
 BDEPEND="
