@@ -9,7 +9,6 @@ inherit meson ninja-utils python-single-r1 git-r3
 
 DESCRIPTION="Listen to different sounds"
 HOMEPAGE="https://github.com/rafaelmardojai/blanket"
-EGIT_OVERRIDE_COMMIT_RAFAELMARDOJAI_BLANKET="408ca93599d32fb899e9262e1f10508e7dca6993"
 EGIT_REPO_URI="https://github.com/rafaelmardojai/blanket.git"
 
 LICENSE="GPL-3"
