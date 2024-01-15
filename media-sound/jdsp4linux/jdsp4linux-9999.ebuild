@@ -26,7 +26,7 @@ DEPEND="
 RDEPEND="${DEPEND}"
 BDEPEND="
 	sys-devel/gcc
-	sys-devel/make
+	dev-build/make
 	virtual/pkgconfig
 	media-video/pipewire
 	dev-qt/linguist-tools

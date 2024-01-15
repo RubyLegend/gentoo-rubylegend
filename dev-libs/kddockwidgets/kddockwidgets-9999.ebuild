@@ -21,7 +21,7 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 BDEPEND="
-    dev-util/cmake
-	dev-util/ninja
+    dev-build/cmake
+	app-alternatives/ninja
 	sys-devel/gcc
 "
