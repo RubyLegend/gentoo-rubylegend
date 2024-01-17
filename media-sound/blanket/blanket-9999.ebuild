@@ -15,7 +15,7 @@ LICENSE="GPL-3"
 SLOT="0"
 
 DEPEND="
-	dev-util/meson
+	dev-build/meson
 	dev-python/pygobject
 	gui-libs/gtk:4
 	gui-libs/libadwaita
