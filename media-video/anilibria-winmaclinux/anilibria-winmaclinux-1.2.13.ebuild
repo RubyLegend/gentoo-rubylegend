@@ -22,6 +22,8 @@ DEPEND="
 	dev-qt/qtsvg:5
 	dev-qt/qtwebsockets:5
 	dev-qt/qtgraphicaleffects:5
+	dev-qt/qtquickcontrols:5
+	dev-qt/qtquickcontrols2:5
 	>=media-video/vlc-3.0.18
 	>=dev-libs/openssl-1.1.1
 	>=media-libs/gstreamer-1.10
