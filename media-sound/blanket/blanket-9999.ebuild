@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..11} )
+PYTHON_COMPAT=( python3_{10..12} )
 
 inherit meson ninja-utils python-single-r1 git-r3
 
@@ -16,10 +16,17 @@ SLOT="0"
 
 DEPEND="
 	dev-build/meson
+	dev-build/ninja
 	dev-python/pygobject
 	gui-libs/gtk:4
-	>=gui-libs/libadwaita-1.5*
+	>=gui-libs/libadwaita-1.5
 	media-libs/gstreamer
 	dev-util/blueprint-compiler
 "
 RDEPEND="${DEPEND}"
+
+src_install() {
+	meson_src_install
+	python_fix_shebang "${ED}"/usr/bin/blanket
+	default_src_install
+}
