@@ -14,9 +14,10 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64"
 
-IUSE=""
+IUSE="+qt6"
 
 DEPEND="
+!qt6? (
 	dev-qt/qtcore:5
 	dev-qt/qtmultimedia:5
 	dev-qt/qtsvg:5
@@ -24,7 +25,15 @@ DEPEND="
 	dev-qt/qtgraphicaleffects:5
 	dev-qt/qtquickcontrols:5
 	dev-qt/qtquickcontrols2:5
+)
+qt6? (
+	dev-qt/qtbase:6
+	dev-qt/qtmultimedia:6
+	dev-qt/qtsvg:6
+	dev-qt/qtwebsockets:6
+)
 	>=media-video/vlc-3.0.18
+	media-video/mpv
 	>=dev-libs/openssl-1.1.1
 	>=media-libs/gstreamer-1.10
 	media-plugins/gst-plugins-libav
@@ -45,8 +54,21 @@ src_unpack() {
 	mkdir -p "${S}"
 }
 
+src_prepare() {
+	if use qt6; then
+		PATCHES+=(
+			"${FILESDIR}/${PN}-1.2.17-qt6-fix.patch"
+		)
+	fi
+	default_src_prepare
+}
+
 src_configure() {
-	eqmake5 DESTDIR="${S}" src/AniLibria.pro
+	if use qt6; then
+		eqmake6 DESTDIR="${S}" src/AniLibria.pro
+	else
+		eqmake5 DESTDIR="${S}" src/AniLibria.pro
+	fi
 	default_src_configure
 }
 
