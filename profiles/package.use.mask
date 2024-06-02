@@ -1,0 +1,4 @@
+# Qt6 support is still WIP
+# Probably will patch it later
+# Until that time - qt6 flag is masked.
+>=media-video/anilibria-winmaclinux-1.2.17 qt6

@@ -11,3 +11,38 @@ index eec0a87..3b67cf5 100644
          auto start = parts[0].toInt();
          auto end = parts[1].toInt();
  
+diff --git a/src/Classes/ViewModels/applicationsviewmodel.h b/src/Classes/ViewModels/applicationsviewmodel.new.h
+index 5c01e7d..fb9c794 100644
+--- a/src/Classes/ViewModels/applicationsviewmodel.h
++++ b/src/Classes/ViewModels/applicationsviewmodel.new.h
+@@ -28,7 +28,7 @@ private:
+     ExternalApplicationModel* m_currentApplication { nullptr };
+     bool m_loading { false };
+     QString m_installPath { "" };
+-    QString m_installIndex { -1 };
++    QString m_installIndex { "" };
+     QString m_lastInstallPath { "" };
+     QString m_lastInstallPathPrefix { "" };
+ 
+diff --git a/src/Classes/ViewModels/applicationsviewmodel.cpp b/src/Classes/ViewModels/applicationsviewmodel.new.cpp
+index b8b702d..e0d289a 100644
+--- a/src/Classes/ViewModels/applicationsviewmodel.cpp
++++ b/src/Classes/ViewModels/applicationsviewmodel.new.cpp
+@@ -118,7 +118,7 @@ void ApplicationsViewModel::installByIndex()
+     qDebug() << "Install URL: " << downloadUrl;
+     auto url = QUrl(downloadUrl);
+     QNetworkRequest request(url);
+-    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
++    //request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, true);
+     m_networkManager->get(request);
+     m_loading = true;
+     emit loadingChanged();
+@@ -138,7 +138,7 @@ void ApplicationsViewModel::checkNewVersions()
+ void ApplicationsViewModel::clearInstallData()
+ {
+     m_installPath = "";
+-    m_installIndex  = -1;
++    m_installIndex  = "";
+ 
+     emit installPathChanged();
+     emit installIndexChanged();

@@ -14,7 +14,7 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64"
 
-IUSE="+qt6"
+IUSE="qt6"
 
 DEPEND="
 !qt6? (
