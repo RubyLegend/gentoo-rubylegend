@@ -14,7 +14,7 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64"
 
-IUSE="qt6"
+IUSE="qt6 vlc mpv"
 
 DEPEND="
 !qt6? (
@@ -32,8 +32,8 @@ qt6? (
 	dev-qt/qtsvg:6
 	dev-qt/qtwebsockets:6
 )
-	>=media-video/vlc-3.0.18
-	media-video/mpv
+vlc? ( >=media-video/vlc-3.0.18 )
+mpv? ( media-video/mpv )
 	>=dev-libs/openssl-1.1.1
 	>=media-libs/gstreamer-1.10
 	media-plugins/gst-plugins-libav
@@ -64,10 +64,15 @@ src_prepare() {
 }
 
 src_configure() {
+	local myconfig=()
+	for i in vlc mpv; do
+		use ${i} && myconfig+=(unix${i})
+	done
+
 	if use qt6; then
-		eqmake6 DESTDIR="${S}" src/AniLibria.pro
+		eqmake6 DESTDIR="${S}" CONFIG+="${myconfig[*]}" src/AniLibria.pro
 	else
-		eqmake5 DESTDIR="${S}" src/AniLibria.pro
+		eqmake5 DESTDIR="${S}" CONFIG+="${myconfig[*]}" src/AniLibria.pro
 	fi
 	default_src_configure
 }
