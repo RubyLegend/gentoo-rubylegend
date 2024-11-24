@@ -1,0 +1,127 @@
+diff --git a/src/Classes/ListModels/releasetorrentcommonlist.cpp b/src/Classes/ListModels/releasetorrentcommonlist.new.cpp
+index 69db4d5..b55d263 100644
+--- a/src/Classes/ListModels/releasetorrentcommonlist.cpp
++++ b/src/Classes/ListModels/releasetorrentcommonlist.cpp
+@@ -1,6 +1,7 @@
+ #include <QUrl>
+ #include <QFile>
+ #include <QDesktopServices>
++#include <QStandardPaths>
+ #include "releasetorrentcommonlist.h"
+ #include "../../globalhelpers.h"
+ 
+diff --git a/src/Classes/ListModels/releaseslistmodel.cpp b/src/Classes/ListModels/releaseslistmodel.new.cpp
+index ff143aa..6b466fc 100644
+--- a/src/Classes/ListModels/releaseslistmodel.cpp
++++ b/src/Classes/ListModels/releaseslistmodel.cpp
+@@ -1284,7 +1284,7 @@ QString ReleasesListModel::getGroupByRelease(const FullReleaseModel* model, cons
+         auto title = model->title().toUpper();
+         if (title.isEmpty()) return "";
+ 
+-        auto firstChar = title[0] + " символ";
++        auto firstChar = title[0] + QString(" символ");
+         return QString(firstChar);
+     }
+ 
+@@ -1292,7 +1292,7 @@ QString ReleasesListModel::getGroupByRelease(const FullReleaseModel* model, cons
+         auto title = model->originalName().toUpper();
+         if (title.isEmpty()) return "";
+ 
+-        auto firstChar = title[0] + " символ";
++        auto firstChar = title[0] + QString(" символ");
+         return QString(firstChar);
+     }
+ 
+diff --git a/src/Classes/ViewModels/extensionsviewmodel.cpp b/src/Classes/ViewModels/extensionsviewmodel.new.cpp
+index 0d95777..5bab2f0 100644
+--- a/src/Classes/ViewModels/extensionsviewmodel.cpp
++++ b/src/Classes/ViewModels/extensionsviewmodel.cpp
+@@ -349,7 +349,7 @@ void ExtensionsViewModel::makeHttpGet(const QString &url, const QList<QString> h
+         }
+     }
+ 
+-    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
++    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, 1);
+     auto reply = m_networkManager->get(request);
+     reply->setProperty("pendingIndentifier", identifier);
+ 
+@@ -379,7 +379,7 @@ void ExtensionsViewModel::makeHttpDelete(const QString &url, const QList<QString
+         }
+     }
+ 
+-    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
++    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, 1);
+     auto reply = m_networkManager->deleteResource(request);
+     reply->setProperty("pendingIndentifier", identifier);
+ }
+@@ -408,7 +408,7 @@ void ExtensionsViewModel::makeHttpPost(const QString &url, const QList<QString>
+         }
+     }
+ 
+-    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
++    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, 1);
+     auto reply = m_networkManager->post(request, body.toUtf8());
+     reply->setProperty("pendingIndentifier", identifier);
+ }
+@@ -437,7 +437,7 @@ void ExtensionsViewModel::makeHttpPut(const QString &url, const QList<QString> h
+         }
+     }
+ 
+-    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
++    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, 1);
+     auto reply = m_networkManager->put(request, body.toUtf8());
+     reply->setProperty("pendingIndentifier", identifier);
+ }
+diff --git a/src/Classes/ViewModels/releasesviewmodel.cpp b/src/Classes/ViewModels/releasesviewmodel.new.cpp
+index ce24ab6..e8d30f0 100644
+--- a/src/Classes/ViewModels/releasesviewmodel.cpp
++++ b/src/Classes/ViewModels/releasesviewmodel.cpp
+@@ -23,7 +23,7 @@
+ #include <QDesktopServices>
+ #include <QtConcurrent>
+ #include <QFuture>
+-#include <QMutableStringListIterator>
++#include <QMutableListIterator>
+ #include "releasesviewmodel.h"
+ #include "../../globalhelpers.h"
+ 
+@@ -594,7 +594,7 @@ void ReleasesViewModel::fillRecommendsByGenres(QList<FullReleaseModel *> *list)
+     auto genres = getMostPopularGenres();
+     if (genres.isEmpty()) return;
+ 
+-    QMutableStringListIterator iterator(genres);
++    QMutableListIterator<QString> iterator(genres);
+     while (iterator.hasNext()) {
+         auto value = iterator.next();
+         iterator.setValue(value.toLower());
+@@ -740,7 +740,7 @@ void ReleasesViewModel::fillRecommendedByVoices(QList<FullReleaseModel *> *list)
+     auto voices = getMostPopularVoices();
+     if (voices.isEmpty()) return;
+ 
+-    QMutableStringListIterator iterator(voices);
++    QMutableListIterator<QString> iterator(voices);
+     while (iterator.hasNext()) {
+         auto value = iterator.next();
+         iterator.setValue(value.toLower());
+diff --git a/src/Classes/ViewModels/releasesviewmodel.cpp b/src/Classes/ViewModels/releasesviewmodel.new.cpp
+index 0d8871b..ccd33ce 100644
+--- a/src/Classes/ViewModels/releasesviewmodel.cpp
++++ b/src/Classes/ViewModels/releasesviewmodel.cpp
+@@ -2018,7 +2018,7 @@ void ReleasesViewModel::saveSchedule(QString json)
+     auto root = jsonDocument.object();
+     if (!root.contains("data")) return;
+     if (!root["data"].isArray()) return;
+-    auto data = root["data"].toArray();
++    auto data = root["data"];
+ 
+     QJsonObject savedObject;
+ 
+@@ -2052,7 +2052,7 @@ void ReleasesViewModel::saveFavoritesFromJson(QString data)
+     auto responseData = root["data"].toObject();
+     if (!responseData.contains("items")) return;
+     if (!responseData["items"].isArray()) return;
+-    auto items = responseData["items"].toArray();
++    auto items = responseData["items"];
+ 
+     QList<int> ids;
+     foreach (auto item, items) {

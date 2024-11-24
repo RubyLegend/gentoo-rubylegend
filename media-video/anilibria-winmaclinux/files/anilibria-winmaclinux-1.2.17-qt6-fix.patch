@@ -33,7 +33,7 @@ index b8b702d..e0d289a 100644
      auto url = QUrl(downloadUrl);
      QNetworkRequest request(url);
 -    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-+    //request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, true);
++    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, 1);
      m_networkManager->get(request);
      m_loading = true;
      emit loadingChanged();

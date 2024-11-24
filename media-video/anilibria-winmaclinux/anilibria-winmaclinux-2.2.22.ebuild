@@ -46,6 +46,7 @@ BDEPEND="
 PATCHES=(
 	"${FILESDIR}/${PN}-1.2.12-remove-icons-48.patch"
 	"${FILESDIR}/${PN}-1.2.12-fix-icons-path.patch"
+
 )
 
 src_unpack() {
@@ -58,6 +59,7 @@ src_prepare() {
 	if use qt6; then
 		PATCHES+=(
 			"${FILESDIR}/${PN}-1.2.17-qt6-fix.patch"
+			"${FILESDIR}/${PN}-2.2.22-patch-qt6.patch"
 		)
 	fi
 	default_src_prepare
