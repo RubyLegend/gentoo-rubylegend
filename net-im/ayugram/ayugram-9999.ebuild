@@ -17,7 +17,7 @@ EGIT_REPO_URI="https://github.com/AyuGram/AyuGramDesktop.git"
 
 LICENSE="BSD GPL-3-with-openssl-exception LGPL-2+"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~riscv"
+KEYWORDS="amd64 ~arm64 ~loong ~riscv"
 IUSE="dbus enchant +fonts +jemalloc +libdispatch screencast qt6 wayland webkit +X"
 
 CDEPEND="
@@ -35,8 +35,8 @@ CDEPEND="
 	media-libs/openal
 	media-libs/opus
 	media-libs/rnnoise
-	~media-libs/tg_owt-0_pre20240804:=[screencast=,X=]
-	media-video/ffmpeg:=[opus,vpx]
+	~media-libs/tg_owt-0_pre20241202:=[screencast=,X=]
+	>=media-video/ffmpeg-6:=[opus,vpx]
 	sys-libs/zlib:=[minizip]
 	!enchant? ( >=app-text/hunspell-1.7:= )
 	enchant? ( app-text/enchant:= )
@@ -82,6 +82,7 @@ BDEPEND="
 	${PYTHON_DEPS}
 	>=dev-build/cmake-3.16
 	>=dev-cpp/cppgir-2.0_p20240315
+	dev-libs/gobject-introspection
 	dev-util/gdbus-codegen
 	virtual/pkgconfig
 	wayland? ( dev-util/wayland-scanner )
@@ -93,7 +94,6 @@ PATCHES=(
 	"${FILESDIR}"/tdesktop-5.2.2-qt6-no-wayland.patch
 	"${FILESDIR}"/tdesktop-5.2.2-libdispatch.patch
 	"${FILESDIR}"/tdesktop-5.7.2-cstring.patch
-	"${FILESDIR}"/tdesktop-5.8.3-webkit-no-wayland.patch
 	"${FILESDIR}"/tdesktop-5.8.3-cstdint.patch
 )
 
