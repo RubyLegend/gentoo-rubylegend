@@ -30,6 +30,7 @@ DEPEND="
 	${BDEPEND}
 	dev-python/lsprotocol[${PYTHON_USEDEP}]
 	dev-python/pygls[${PYTHON_USEDEP}]
+	dev-python/cattrs[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest
