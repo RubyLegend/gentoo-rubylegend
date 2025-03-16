@@ -3,15 +3,15 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=pdm-backend
+DISTUTILS_USE_PEP517=flit
 PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 
 inherit distutils-r1 pypi
 
-DESCRIPTION="CMake language server"
+DESCRIPTION="Code generator and generated types for Language Server Protocol."
 HOMEPAGE="
-	https://github.com/regen100/cmake-language-server/
-	https://pypi.org/project/cmake-language-server/
+	https://github.com/microsoft/lsprotocol/
+	https://pypi.org/project/lsprotocol/
 "
 
 LICENSE="MIT"
@@ -25,10 +25,6 @@ BDEPEND="
 		dev-python/more-itertools[${PYTHON_USEDEP}]
 		dev-python/packaging[${PYTHON_USEDEP}]
 	)
-"
-DEPEND="
-	${BDEPEND}
-	dev-python/lsprotocol[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest
