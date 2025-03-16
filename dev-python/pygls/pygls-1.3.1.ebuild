@@ -3,15 +3,15 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=pdm-backend
+DISTUTILS_USE_PEP517=poetry
 PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 
 inherit distutils-r1 pypi
 
-DESCRIPTION="CMake language server"
+DESCRIPTION="A pythonic generic language server."
 HOMEPAGE="
-	https://github.com/regen100/cmake-language-server/
-	https://pypi.org/project/cmake-language-server/
+	https://github.com/openlawlibrary/pygls/
+	https://pypi.org/project/pygls/
 "
 
 LICENSE="MIT"
@@ -26,10 +26,4 @@ BDEPEND="
 		dev-python/packaging[${PYTHON_USEDEP}]
 	)
 "
-DEPEND="
-	${BDEPEND}
-	dev-python/lsprotocol[${PYTHON_USEDEP}]
-	dev-python/pygls[${PYTHON_USEDEP}]
-"
-
 distutils_enable_tests pytest
