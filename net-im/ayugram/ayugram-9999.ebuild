@@ -1,4 +1,4 @@
-# Copyright 2020-2024 Gentoo Authors
+# Copyright 2020-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -30,6 +30,9 @@ CDEPEND="
 	dev-libs/openssl:=
 	>=dev-libs/protobuf-21.12
 	dev-libs/xxhash
+	>=dev-qt/qtbase-6.5:6=[dbus?,gui,network,opengl,ssl,wayland?,widgets,X?]
+	>=dev-qt/qtimageformats-6.5:6
+	>=dev-qt/qtsvg-6.5:6
 	media-libs/libjpeg-turbo:=
 	~media-libs/libtgvoip-2.4.4_p20240706
 	media-libs/openal
@@ -38,32 +41,15 @@ CDEPEND="
 	~media-libs/tg_owt-0_pre20241202:=[screencast=,X=]
 	>=media-video/ffmpeg-6:=[opus,vpx]
 	sys-libs/zlib:=[minizip]
+	kde-frameworks/kcoreaddons:6
 	!enchant? ( >=app-text/hunspell-1.7:= )
 	enchant? ( app-text/enchant:= )
 	jemalloc? ( dev-libs/jemalloc:= )
 	libdispatch? ( dev-libs/libdispatch )
-	!qt6? (
-		>=dev-qt/qtcore-5.15:5=
-		>=dev-qt/qtgui-5.15:5=[dbus?,jpeg,png,wayland?,X?]
-		>=dev-qt/qtimageformats-5.15:5
-		>=dev-qt/qtnetwork-5.15:5[ssl]
-		>=dev-qt/qtsvg-5.15:5
-		>=dev-qt/qtwidgets-5.15:5[png,X?]
-		kde-frameworks/kcoreaddons:5
-		webkit? ( wayland? (
-			>=dev-qt/qtdeclarative-5.15:5
-			>=dev-qt/qtwayland-5.15:5[compositor(+)]
-		) )
-	)
-	qt6? (
-		>=dev-qt/qtbase-6.5:6=[dbus?,gui,network,opengl,wayland?,widgets,X?]
-		>=dev-qt/qtimageformats-6.5:6
-		>=dev-qt/qtsvg-6.5:6
-		webkit? ( wayland? (
-			>=dev-qt/qtdeclarative-6.5:6
-			>=dev-qt/qtwayland-6.5:6[compositor,qml]
-		) )
-	)
+	webkit? ( wayland? (
+		>=dev-qt/qtdeclarative-6.5:6
+		>=dev-qt/qtwayland-6.5:6[compositor,qml]
+	) )
 	X? (
 		x11-libs/libxcb:=
 		x11-libs/xcb-util-keysyms
@@ -95,6 +81,7 @@ PATCHES=(
 	"${FILESDIR}"/tdesktop-5.2.2-libdispatch.patch
 	"${FILESDIR}"/tdesktop-5.7.2-cstring.patch
 	"${FILESDIR}"/tdesktop-5.8.3-cstdint.patch
+	"${FILESDIR}"/tdesktop-5.12.3-fix-webview.patch
 )
 
 pkg_pretend() {
@@ -155,9 +142,8 @@ src_configure() {
 	use !libdispatch && append-cppflags -DCRL_FORCE_QT
 
 	local use_webkit_wayland=$(use webkit && use wayland && echo yes || echo no)
-	local qt=$(usex qt6 6 5)
 	local mycmakeargs=(
-		-DQT_VERSION_MAJOR=${qt}
+		-DQT_VERSION_MAJOR=6
 
 		# Override new cmake.eclass defaults (https://bugs.gentoo.org/921939)
 		# Upstream never tests this any other way
@@ -170,8 +156,6 @@ src_configure() {
 		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}QuickWidgets=${use_webkit_wayland}
 		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}WaylandClient=$(usex !wayland)
 		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}WaylandCompositor=${use_webkit_wayland}
-		## KF6CoreAddons is currently unavailable in ::gentoo
-		-DCMAKE_DISABLE_FIND_PACKAGE_KF${qt}CoreAddons=$(usex qt6)
 
 		-DDESKTOP_APP_USE_LIBDISPATCH=$(usex libdispatch)
 		-DDESKTOP_APP_DISABLE_X11_INTEGRATION=$(usex !X)
@@ -228,17 +212,6 @@ pkg_postinst() {
 		ewarn "https://github.com/telegramdesktop/tdesktop/wiki/The-Packaged-Building-Mode"
 		ewarn
 	fi
-	if use wayland && ! use qt6; then
-		ewarn "Wayland-specific integrations have been deprecated with Qt5."
-		ewarn "The app will continue to function under wayland, but some"
-		ewarn "functionality may be reduced."
-		ewarn "These integrations are only supported when built with Qt6."
-		ewarn
-	fi
 	optfeature_header
-	if ! use qt6; then
-		optfeature "AVIF, HEIF and JpegXL image support" kde-frameworks/kimageformats:5[avif,heif,jpegxl]
-	else
-		optfeature "AVIF, HEIF and JpegXL image support" kde-frameworks/kimageformats:6[avif,heif,jpegxl]
-	fi
+	optfeature "AVIF, HEIF and JpegXL image support" kde-frameworks/kimageformats:6[avif,heif,jpegxl]
 }
