@@ -21,6 +21,10 @@ DEPEND="${RDEPEND}
 	>=media-libs/nv-codec-headers-11.1.5.1"
 BDEPEND="virtual/pkgconfig"
 
+PATCHES="
+	${FILESDIR}/fix_types.patch
+"
+
 pkg_postinst() {
 	# Source: https://github.com/elFarto/nvidia-vaapi-driver/blob/v0.0.12/src/backend-common.c#L13
 	elog "If vaapi drivers fail to load, then make sure that you are"

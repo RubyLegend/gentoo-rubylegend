@@ -1,0 +1,13 @@
+diff --git a/meson.build b/meson.build.new
+index 990c2b2..818178c 100644
+--- a/meson.build
++++ b/meson.build.new
+@@ -31,7 +31,7 @@ if cc.get_argument_syntax() == 'gcc'
+         cc.get_supported_arguments([
+             '-Wno-missing-field-initializers',
+             '-Wno-unused-parameter',
+-            '-Werror=format',
++            #'-Werror=format',
+             '-Werror=format-security',
+             '-Werror=incompatible-pointer-types',
+             '-Werror=init-self',
