@@ -3,12 +3,15 @@
 
 EAPI=8
 
-inherit qmake-utils
+inherit qmake-utils cmake ninja-utils
 
-DESCRIPTION="Anime viewer application from AniLibria (Qt Version)"
+DESCRIPTION="Anime viewer application from AniLiberty (Qt Version)"
 HOMEPAGE="https://github.com/anilibria/anilibria-winmaclinux"
-SRC_URI="https://github.com/anilibria/anilibria-winmaclinux/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz"
-S="${WORKDIR}/${P}"
+# For 2.2.29 - specific commit selected because patch was not applied on tag
+SRC_URI="https://github.com/anilibria/anilibria-winmaclinux/archive/c1fd42dee81f02c81a86b0705aaec882a9cfe185.zip -> ${P}.zip"
+S="${WORKDIR}/${PN}-c1fd42dee81f02c81a86b0705aaec882a9cfe185"
+
+CMAKE_USE_DIR="${S}/src"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -43,17 +46,12 @@ BDEPEND="
 	>=sys-devel/gcc-11
 "
 
-PATCHES=(
-	"${FILESDIR}/${PN}-1.2.12-remove-icons-48.patch"
-	"${FILESDIR}/${PN}-1.2.12-fix-icons-path.patch"
-
-)
-
 src_unpack() {
 	# Create build directory
 	default_src_unpack
 	mkdir -p "${S}"
 }
+
 
 src_configure() {
 	local myconfig=()
@@ -61,15 +59,12 @@ src_configure() {
 		use ${i} && myconfig+=(unix${i})
 	done
 
-	if use qt6; then
-		eqmake6 DESTDIR="${S}" CONFIG+="${myconfig[*]}" src/AniLibria.pro
-	else
-		eqmake5 DESTDIR="${S}" CONFIG+="${myconfig[*]}" src/AniLibria.pro
-	fi
+	cmake_src_configure
 	default_src_configure
 }
 
 src_install() {
-	emake INSTALL_ROOT="${D}" install
+	DESTDIR="${D}" eninja -C "${CMAKE_USE_DIR}_build" install
+	default_src_install
 }
 
