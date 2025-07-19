@@ -55,16 +55,6 @@ src_unpack() {
 	mkdir -p "${S}"
 }
 
-src_prepare() {
-	if use qt6; then
-		PATCHES+=(
-			"${FILESDIR}/${PN}-1.2.17-qt6-fix.patch"
-			"${FILESDIR}/${PN}-2.2.22-patch-qt6.patch"
-		)
-	fi
-	default_src_prepare
-}
-
 src_configure() {
 	local myconfig=()
 	for i in vlc mpv; do
