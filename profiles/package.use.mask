@@ -1,4 +1,3 @@
-# Qt6 support is still WIP
-# Probably will patch it later
-# Until that time - qt6 flag is masked.
->=media-video/anilibria-winmaclinux-1.2.17 qt6
+# Beta Qt6 support was first added in 2.2.29.
+# Blocking earlier versions because of that.
+<=media-video/anilibria-winmaclinux-2.2.29 qt6
