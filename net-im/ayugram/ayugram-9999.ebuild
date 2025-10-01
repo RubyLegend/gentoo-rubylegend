@@ -3,11 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..13} )
 
-inherit xdg cmake python-any-r1 optfeature flag-o-matic git-r3
+inherit xdg cmake python-any-r1 optfeature flag-o-matic toolchain-funcs git-r3
 
-DESCRIPTION="Official desktop client for Telegram"
+DESCRIPTION="(Un)Official desktop client for Telegram"
 HOMEPAGE="https://desktop.telegram.org https://github.com/telegramdesktop/tdesktop https://github.com/AyuGram/AyuGramDesktop https://ayugram.one"
 
 #MY_P="tdesktop-${PV}-full"
@@ -17,38 +17,39 @@ EGIT_REPO_URI="https://github.com/AyuGram/AyuGramDesktop.git"
 
 LICENSE="BSD GPL-3-with-openssl-exception LGPL-2+"
 SLOT="0"
-KEYWORDS="amd64 ~arm64 ~loong ~riscv"
-IUSE="dbus enchant +fonts +jemalloc +libdispatch screencast qt6 wayland webkit +X"
+KEYWORDS="~amd64 ~loong"
+IUSE="dbus enchant +fonts +libdispatch screencast wayland webkit +X"
 
 CDEPEND="
 	!net-im/telegram-desktop-bin
 	app-arch/lz4:=
 	dev-cpp/abseil-cpp:=
 	dev-cpp/ada:=
+	dev-cpp/cld3:=
 	>=dev-cpp/glibmm-2.77:2.68
 	dev-libs/glib:2
 	dev-libs/openssl:=
 	>=dev-libs/protobuf-21.12
+	dev-libs/qr-code-generator:=
 	dev-libs/xxhash
 	>=dev-qt/qtbase-6.5:6=[dbus?,gui,network,opengl,ssl,wayland?,widgets,X?]
 	>=dev-qt/qtimageformats-6.5:6
 	>=dev-qt/qtsvg-6.5:6
 	media-libs/libjpeg-turbo:=
-	~media-libs/libtgvoip-2.4.4_p20240706
 	media-libs/openal
 	media-libs/opus
 	media-libs/rnnoise
-	~media-libs/tg_owt-0_pre20241202:=[screencast=,X=]
-	>=media-video/ffmpeg-6:=[opus,vpx]
+	>=media-libs/tg_owt-0_pre20241202:=[screencast=,X=]
+	>=media-video/ffmpeg-4:=[opus,vpx]
+	net-libs/tdlib:=[tde2e]
 	sys-libs/zlib:=[minizip]
 	kde-frameworks/kcoreaddons:6
 	!enchant? ( >=app-text/hunspell-1.7:= )
 	enchant? ( app-text/enchant:= )
-	jemalloc? ( dev-libs/jemalloc:= )
 	libdispatch? ( dev-libs/libdispatch )
 	webkit? ( wayland? (
 		>=dev-qt/qtdeclarative-6.5:6
-		>=dev-qt/qtwayland-6.5:6[compositor,qml]
+		>=dev-qt/qtwayland-6.5:6[compositor(+),qml]
 	) )
 	X? (
 		x11-libs/libxcb:=
@@ -61,6 +62,7 @@ RDEPEND="${CDEPEND}
 DEPEND="${CDEPEND}
 	>=dev-cpp/cppgir-2.0_p20240315
 	>=dev-cpp/ms-gsl-4.1.0
+	dev-cpp/expected
 	dev-cpp/expected-lite
 	dev-cpp/range-v3
 "
@@ -75,8 +77,8 @@ BDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}"/tdesktop-4.2.4-jemalloc-only-telegram-r1.patch
-	"${FILESDIR}"/tdesktop-4.10.0-system-cppgir.patch
+	#"${FILESDIR}"/tdesktop-4.2.4-jemalloc-only-telegram-r1.patch
+	#"${FILESDIR}"/tdesktop-4.10.0-system-cppgir.patch
 	"${FILESDIR}"/tdesktop-5.2.2-qt6-no-wayland.patch
 	"${FILESDIR}"/tdesktop-5.2.2-libdispatch.patch
 	"${FILESDIR}"/tdesktop-5.7.2-cstring.patch
@@ -85,26 +87,39 @@ PATCHES=(
 )
 
 pkg_pretend() {
-	if has ccache ${FEATURES}; then
-		ewarn "ccache does not work with ${PN} out of the box"
-		ewarn "due to usage of precompiled headers"
-		ewarn "check bug https://bugs.gentoo.org/715114 for more info"
-		ewarn
+	if [[ ${MERGE_TYPE} != binary ]]; then
+		if has ccache ${FEATURES}; then
+			ewarn "ccache does not work with ${PN} out of the box"
+			ewarn "due to usage of precompiled headers"
+			ewarn "check bug https://bugs.gentoo.org/715114 for more info"
+			ewarn
+		fi
+		if tc-is-clang && [[ $(tc-get-cxx-stdlib) = libstdc++ ]]; then
+			ewarn "this package frequently fails to compile with clang"
+			ewarn "in combination with libstdc++."
+			ewarn "please use libc++, or build this package with gcc."
+			ewarn "(if you have a patch or a fix, please open a"
+			ewarn "bug report about it)"
+			ewarn
+		fi
 	fi
 }
 
 src_prepare() {
 	# Happily fail if libraries aren't found...
 	find -type f \( -name 'CMakeLists.txt' -o -name '*.cmake' \) \
-		\! -path './Telegram/lib_webview/CMakeLists.txt' \
-		\! -path './cmake/external/expected/CMakeLists.txt' \
-		\! -path './cmake/external/kcoreaddons/CMakeLists.txt' \
 		\! -path './cmake/external/qt/package.cmake' \
 		-print0 | xargs -0 sed -i \
 		-e '/pkg_check_modules(/s/[^ ]*)/REQUIRED &/' \
-		-e '/find_package(/s/)/ REQUIRED)/' || die
+		-e '/find_package(/s/)/ REQUIRED)/' \
+		-e '/find_library(/s/)/ REQUIRED)/' || die
 	# Make sure to check the excluded files for new
 	# CMAKE_DISABLE_FIND_PACKAGE entries.
+
+	# Some packages are found through pkg_check_modules, rather than find_package
+	sed -e '/find_package(lz4 /d' -i cmake/external/lz4/CMakeLists.txt || die
+	sed -e '/find_package(Opus /d' -i cmake/external/opus/CMakeLists.txt || die
+	sed -e '/find_package(xxHash /d' -i cmake/external/xxhash/CMakeLists.txt || die
 
 	# Control QtDBus dependency from here, to avoid messing with QtGui.
 	# QtGui will use find_package to find QtDbus as well, which
@@ -117,7 +132,7 @@ src_prepare() {
 	# Control automagic dep only needed when USE="webkit wayland"
 	if ! use webkit || ! use wayland; then
 		sed -e 's/QT_CONFIG(wayland_compositor_quick)/0/' \
-			-i Telegram/Telegram/lib_webview/webview/platform/linux/webview_linux_compositor.h
+			-i Telegram/lib_webview/webview/platform/linux/webview_linux_compositor.h || die
 	fi
 
 	cmake_src_prepare
@@ -128,7 +143,7 @@ src_configure() {
 	# XDG_DATA_DIRS variable causes all sorts of weirdness with cppgir:
 	# - bug 909038: can't read from flatpak directories (fixed upstream)
 	# - bug 920819: system-wide directories ignored when variable is set
-	export XDG_DATA_DIRS="${EPREFIX}/usr/share"
+	export XDG_DATA_DIRS="${ESYSROOT}/usr/share"
 
 	# Evil flag (bug #919201)
 	filter-flags -fno-delete-null-pointer-checks
@@ -141,6 +156,7 @@ src_configure() {
 	# https://github.com/telegramdesktop/tdesktop/issues/17437#issuecomment-1001160398
 	use !libdispatch && append-cppflags -DCRL_FORCE_QT
 
+	local no_webkit_wayland=$(use webkit && use wayland && echo no || echo yes)
 	local use_webkit_wayland=$(use webkit && use wayland && echo yes || echo no)
 	local mycmakeargs=(
 		-DQT_VERSION_MAJOR=6
@@ -150,21 +166,28 @@ src_configure() {
 		-DCMAKE_DISABLE_PRECOMPILE_HEADERS=OFF
 
 		# Control automagic dependencies on certain packages
-		## Header-only lib, some git version.
-		-DCMAKE_DISABLE_FIND_PACKAGE_tl-expected=ON
-		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}Quick=${use_webkit_wayland}
-		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}QuickWidgets=${use_webkit_wayland}
-		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}WaylandClient=$(usex !wayland)
-		-DCMAKE_DISABLE_FIND_PACKAGE_Qt${qt}WaylandCompositor=${use_webkit_wayland}
+		## These libraries are only used in lib_webview, for wayland
+		## See Telegram/lib_webview/webview/platform/linux/webview_linux_compositor.h
+		-DCMAKE_DISABLE_FIND_PACKAGE_Qt6Quick=${no_webkit_wayland}
+		-DCMAKE_DISABLE_FIND_PACKAGE_Qt6QuickWidgets=${no_webkit_wayland}
+		-DCMAKE_DISABLE_FIND_PACKAGE_Qt6WaylandCompositor=${no_webkit_wayland}
 
-		-DDESKTOP_APP_USE_LIBDISPATCH=$(usex libdispatch)
+		# Make sure dependencies that aren't patched to be REQUIRED in
+		# src_prepare, are found.  This was suggested to me by the telegram
+		# devs, in lieu of having explicit flags in the build system.
+		-DCMAKE_REQUIRE_FIND_PACKAGE_Qt6DBus=$(usex dbus)
+		-DCMAKE_REQUIRE_FIND_PACKAGE_Qt6Quick=${use_webkit_wayland}
+		-DCMAKE_REQUIRE_FIND_PACKAGE_Qt6QuickWidgets=${use_webkit_wayland}
+		-DCMAKE_REQUIRE_FIND_PACKAGE_Qt6WaylandCompositor=${use_webkit_wayland}
+
+		-DDESKTOP_APP_DISABLE_QT_PLUGINS=ON
 		-DDESKTOP_APP_DISABLE_X11_INTEGRATION=$(usex !X)
-		-DDESKTOP_APP_DISABLE_WAYLAND_INTEGRATION=$(usex !wayland)
-		-DDESKTOP_APP_DISABLE_JEMALLOC=$(usex !jemalloc)
 		## Enables enchant and disables hunspell
 		-DDESKTOP_APP_USE_ENCHANT=$(usex enchant)
 		## Use system fonts instead of bundled ones
 		-DDESKTOP_APP_USE_PACKAGED_FONTS=$(usex !fonts)
+		## See tdesktop-*-libdispatch.patch
+		-DDESKTOP_APP_USE_LIBDISPATCH=$(usex libdispatch)
 	)
 
 	if [[ -n ${MY_TDESKTOP_API_ID} && -n ${MY_TDESKTOP_API_HASH} ]]; then
@@ -193,17 +216,17 @@ src_configure() {
 	cmake_src_configure
 }
 
+src_compile() {
+	# There's a bug where sometimes, it will rebuild/relink during src_install
+	# Make sure that happens here, instead.
+	cmake_build
+	cmake_build
+}
+
 pkg_postinst() {
 	xdg_pkg_postinst
 	if ! use X && ! use screencast; then
 		ewarn "both the 'X' and 'screencast' USE flags are disabled, screen sharing won't work!"
-		ewarn
-	fi
-	if ! use jemalloc && use elibc_glibc; then
-		# https://github.com/telegramdesktop/tdesktop/issues/16084
-		# https://github.com/desktop-app/cmake_helpers/pull/91#issuecomment-881788003
-		ewarn "Disabling USE=jemalloc on glibc systems may cause very high RAM usage!"
-		ewarn "Do NOT report issues about RAM usage without enabling this flag first."
 		ewarn
 	fi
 	if ! use libdispatch; then
