@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..13} )
 
 inherit meson ninja-utils python-single-r1 git-r3
 
@@ -12,7 +12,7 @@ HOMEPAGE="https://github.com/rafaelmardojai/blanket"
 EGIT_REPO_URI="https://github.com/rafaelmardojai/blanket.git"
 
 # Locking commit for now due to change in libadwaita version, which is not published yet
-EGIT_OVERRIDE_COMMIT_RAFAELMARDOJAI_BLANKET="a961c1faeab69a61605b8733692b709ab5d2f09f"
+#EGIT_OVERRIDE_COMMIT_RAFAELMARDOJAI_BLANKET="a961c1faeab69a61605b8733692b709ab5d2f09f"
 
 LICENSE="GPL-3"
 SLOT="0"
