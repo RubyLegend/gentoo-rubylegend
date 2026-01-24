@@ -21,7 +21,7 @@ DEPEND="
 	dev-qt/qtcore
 	dev-qt/qtsvg
 	dev-libs/glib
-	dev-cpp/glibmm
+	dev-cpp/glibmm:2
 "
 RDEPEND="${DEPEND}"
 BDEPEND="
