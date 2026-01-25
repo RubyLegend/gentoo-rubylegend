@@ -31,6 +31,7 @@ DEPEND="
 	x11-libs/libxcb
 	x11-libs/libxcb
 	x11-libs/libxshmfence
+	media-video/ffmpeg-compat:4[x265,openh264]
 "
 RDEPEND="${DEPEND}"
 BDEPEND=""
@@ -44,5 +45,16 @@ src_unpack() {
 }
 
 src_install() {
+	mv usr/bin/parsecd usr/bin/parsecd_real
+
+	# Creating runner with LD_LIBRARY_PATH bypass
+	cat >> usr/bin/parsecd << EOF
+#!/bin/bash
+
+export LD_LIBRARY_PATH=/usr/lib/ffmpeg4/lib64/:\$LD_LIBRARY_PATH
+/usr/bin/parsecd_real
+EOF
+	chmod +x usr/bin/parsecd
+
 	cp -R usr/ "${D}/" || die "Could not copy."
 }
