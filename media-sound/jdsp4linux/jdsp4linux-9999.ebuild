@@ -18,7 +18,7 @@ IUSE="qt6"
 
 DEPEND="
 	app-arch/libarchive
-	dev-qt/qtcore
+	dev-qt/qtbase
 	dev-qt/qtsvg
 	dev-libs/glib
 	dev-cpp/glibmm:2
@@ -29,8 +29,9 @@ BDEPEND="
 	dev-build/make
 	virtual/pkgconfig
 	media-video/pipewire
-	dev-qt/linguist-tools
 "
+#dev-qt/linguist-tools removal
+#dev-qt/qtcore rebase to qtbase
 
 # Seems like not required anymore
 # src_prepare() {
