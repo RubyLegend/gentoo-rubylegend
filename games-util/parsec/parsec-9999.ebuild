@@ -12,7 +12,7 @@ SRC_URI="https://builds.parsec.app/package/parsec-linux.deb -> ${P}.deb"
 LICENSE="Parsec-EULA"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE=""
+IUSE="nvidia"
 
 DEPEND="
 	dev-libs/expat
@@ -32,6 +32,9 @@ DEPEND="
 	x11-libs/libxcb
 	x11-libs/libxshmfence
 	media-video/ffmpeg-compat:4[x265,openh264]
+	nvidia? (
+		media-video/ffmpeg-compat:4[cuda-clang,opencl]
+	)
 "
 RDEPEND="${DEPEND}"
 BDEPEND=""
